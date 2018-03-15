@@ -1,5 +1,8 @@
 ﻿using Lomztein.PlaceholderName.Characters.Extensions;
+using Lomztein.PlaceholderName.Characters.PhysicalEquipment;
 using Lomztein.PlaceholderName.Characters.SerializableStats;
+using Lomztein.PlaceholderName.Items;
+using Lomztein.PlaceholderName.Weaponary;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +18,37 @@ namespace Lomztein.PlaceholderName.Characters {
         [Header ("Stats")]
         public HealthStat health = new HealthStat ("Health", new Health (new FloatStat ("Base Health", 100f)));
         public FloatStat armor = new FloatStat ("Armor", 0f);
+        public FloatStat speed = new FloatStat ("Speed", 5f);
+        public FloatStat damageMul = new FloatStat ("Damage", 1f);
+        public FloatStat accuracyMul = new FloatStat ("Accuracy", 1f);
+        public FloatStat firerateMul = new FloatStat ("Firerate", 1f);
 
         // TODO: Implement helper function to sync these with a potential collider.
         public Vector3 center = Vector3.up;
         public Vector3 size = new Vector3 (1, 2, 1);
 
-        public Equipment.SlotDefinition [ ] equipmentSlotDefinitions;
-        public Equipment equipment;
+        public CharacterEquipment.SlotDefinition [ ] equipmentSlotDefinitions;
+        public CharacterEquipment equipment;
+
+        public LayerMask targetLayer;
+        public Inventory inventory;
+
+        public delegate void CharacterUseToolEvent(Tool tool);
+
+        /// <summary>
+        /// Fired each frame that a tool is "held down", like an automatic weapon.
+        /// </summary>
+        public event CharacterUseToolEvent OnToolHeld;
+
+        /// <summary>
+        /// Fired when a tool starts to be held.
+        /// </summary>
+        public event CharacterUseToolEvent OnToolPressed;
+
+        /// <summary>
+        /// Fired when a tool being held down is released.
+        /// </summary>
+        public event CharacterUseToolEvent OnToolReleased;
 
         public float GetHealth() {
             return health.GetModifiers ().Sum (x => x.value.health);
@@ -38,9 +65,24 @@ namespace Lomztein.PlaceholderName.Characters {
             }
         }
 
+        public void PressTool (Tool tool) {
+            CallToolEvent (OnToolPressed, tool);
+            tool.OnUsePressed ();
+        }
+
+        public void ReleaseTool (Tool tool) {
+            CallToolEvent (OnToolReleased, tool);
+            tool.OnUseReleased ();
+        }
+
+        public void HoldTool (Tool tool) {
+            CallToolEvent (OnToolHeld, tool);
+            tool.OnUseHeld ();
+        }
+
         void Awake() {
-            equipment = ScriptableObject.CreateInstance<Equipment> ();
-            equipment.Initialize (equipmentSlotDefinitions);
+            equipment = ScriptableObject.CreateInstance<CharacterEquipment> ();
+            equipment.Initialize (this, equipmentSlotDefinitions);
         }
 
         public void Kill () {
@@ -49,6 +91,11 @@ namespace Lomztein.PlaceholderName.Characters {
 
         private void OnDrawGizmosSelected() {
             Gizmos.DrawWireCube (transform.position + center, size); 
+        }
+
+        private void CallToolEvent (CharacterUseToolEvent evt, Tool tool) {
+            if (evt != null)
+                evt (tool);
         }
 
     }

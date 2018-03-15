@@ -22,13 +22,15 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         // Use this for initialization
-        void Start() {
+        void Start () {
             ItemSlots = new List<ItemSlot> ();
+            List<ItemSlot> toEquip = new List<ItemSlot> ();
+
             foreach (Piece piece in pieces) {
                 if (piece.item is IEquipable) {
                     ItemSlot slot = ItemSlot.CreateSlot (this);
                     slot.SetItem (piece.item.CreateItem (), piece.count);
-                    GetComponent<Character> ().equipment.Equip (slot);
+                    toEquip.Add (slot);
                 } else {
                     ItemSlots.Add (ItemSlot.CreateSlot (this));
                     ItemSlots.Last ().SetItem (piece.item.CreateItem (), piece.count);
@@ -36,6 +38,7 @@ namespace Lomztein.PlaceholderName.Items {
             }
 
             GetComponent<Inventory> ().PlaceItems (ItemSlots.ToArray ());
+            toEquip.ForEach (x => GetComponent<Character> ().equipment.Equip (x));
         }
 
         [System.Serializable]

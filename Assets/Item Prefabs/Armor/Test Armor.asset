@@ -8,12 +8,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20ef8bd9075a9f44e946d5ca042fe8a4, type: 3}
-  m_Name: Test Item
+  m_Script: {fileID: 11500000, guid: fd12f83c692c00f43b0db72114998115, type: 3}
+  m_Name: Test Armor
   m_EditorClassIdentifier: 
-  name: Test Item
-  description: This is an item used to test inventory functionality.
+  name: Test Armor
+  description: Super basic armor for testing stat and armor equipment functionality.
   maxStackSize: 1
-  gameObject: {fileID: 1398092796068152, guid: ffdcc5c0f66e2ae43a1b2d752f249b32, type: 2}
+  gameObject: {fileID: 1883522944084154, guid: 37d64cbed85661f4fa7255804d8f83bf, type: 2}
   icon: {fileID: 0}
   model: {fileID: 0}
+  type: 1

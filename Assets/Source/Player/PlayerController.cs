@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Lomztein.PlaceholderName.Items;
+using Lomztein.PlaceholderName.Characters;
+using Lomztein.PlaceholderName.Characters.PhysicalEquipment;
 
 namespace Lomztein.PlaceholderName.Player {
 
     public class PlayerController : MonoBehaviour {
 
-        public IControllable controllable;
+        public Humanoid character;
         public Inventory inventory;
 
         public static ItemSlot itemInHand;
 
+        public LayerMask groundLayer;
+
         private void Start() {
-            controllable = GetComponent<IControllable> ();
+            character = GetComponent<Humanoid> ();
             itemInHand = ItemSlot.CreateSlot (null);
         }
 
@@ -23,6 +27,11 @@ namespace Lomztein.PlaceholderName.Player {
             if (Input.GetKeyDown (KeyCode.I)) {
                 inventory.Display ();
             }
+
+            if (Input.GetMouseButton (0)) {
+                character.HoldTool (character.equipment.GetSlot (CharacterEquipment.Type.Tool).currentObject.GetComponent<Tool> ());
+            }
+
         }
 
         private void UpdateMovement() {
@@ -36,12 +45,12 @@ namespace Lomztein.PlaceholderName.Player {
             Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
             RaycastHit hitInfo;
 
-            if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity)) {
+            if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity, groundLayer)) {
                 Vector3 mousePosition = hitInfo.point;
-                controllable.Aim (mousePosition, Time.deltaTime);
+                character.Aim (mousePosition + Vector3.up, Time.deltaTime);
             }
 
-            controllable.Move (moveDirection, Time.deltaTime);
+            character.Move (moveDirection, Time.deltaTime);
 
         }
     }

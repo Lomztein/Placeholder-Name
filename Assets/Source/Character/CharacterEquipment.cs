@@ -4,10 +4,13 @@ using UnityEngine;
 using System;
 using Lomztein.PlaceholderName.Items;
 using System.Linq;
+using Lomztein.PlaceholderName.Characters.PhysicalEquipment;
 
 namespace Lomztein.PlaceholderName.Characters {
 
-    public class Equipment : ScriptableObject {
+    public class CharacterEquipment : ScriptableObject {
+
+        public Character parentCharacter;
 
         public delegate void OnEquipmentChangedEvent (Slot itemSlot, Type equipmentType, Item oldItem, Item newItem);
         public event OnEquipmentChangedEvent OnEquipmentChanged;
@@ -26,13 +29,15 @@ namespace Lomztein.PlaceholderName.Characters {
         }
 
         public Slot GetSlot (Type equipmentType) {
-            return equipmentSlots.FirstOrDefault (x => x.equipmentType == equipmentType);
+            return equipmentSlots.FirstOrDefault (x => x.definition.equipmentType == equipmentType);
         }
 
-        public void Initialize (params SlotDefinition[] definitions) {
+        public void Initialize (Character _parentCharacter, params SlotDefinition[] definitions) {
+            parentCharacter = _parentCharacter;
+
             foreach (var def in definitions) {
 
-                Slot slot = Slot.CreateSlot (def.equipmentType, def.parentTransform);
+                Slot slot = Slot.CreateSlot (def);
                 equipmentSlots.Add (slot);
 
                 slot.OnItemChanged += (ItemSlot itemSlot, Item oldItem, Item newItem) => {
@@ -45,27 +50,28 @@ namespace Lomztein.PlaceholderName.Characters {
             if (OnEquipmentChanged != null)
                 OnEquipmentChanged (slot, type, oldItem, newItem);
 
-            if (slot.currentObject)
+            if (slot.currentObject) {
+                slot.currentObject.GetComponent<Equipment> ().OnUnequip (parentCharacter, slot);
                 Destroy (slot.currentObject);
+            }
 
             if (newItem != null) {
-                slot.currentObject = Instantiate (newItem.prefab.gameObject, slot.parentTransform, false);
+                slot.currentObject = Instantiate (newItem.prefab.gameObject, slot.definition.parentTransform, false);
+                slot.currentObject.GetComponent<Equipment> ().OnEquip (parentCharacter, slot);
             }
         }
 
         public class Slot : ItemSlot {
 
-            public Type equipmentType;
-            public Transform parentTransform;
+            public SlotDefinition definition;
             public GameObject currentObject;
 
-            public static Slot CreateSlot (Type type, Transform parent) {
+            public static Slot CreateSlot (SlotDefinition _definition) {
                 Slot slot = CreateInstance<Slot> ();
-                slot.equipmentType = type;
-                slot.parentTransform = parent;
+                slot.definition = _definition;
+
                 return slot;
             }
-
         }
 
         [System.Serializable]
@@ -73,6 +79,7 @@ namespace Lomztein.PlaceholderName.Characters {
 
             public Type equipmentType;
             public Transform parentTransform;
+            public Texture2D emptySlotIcon;
 
         }
     }

@@ -8,13 +8,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd12f83c692c00f43b0db72114998115, type: 3}
-  m_Name: Test Equipment
+  m_Script: {fileID: 11500000, guid: c372dd22b168d2b44ac3870fc0bbc32e, type: 3}
+  m_Name: AssaultRifle
   m_EditorClassIdentifier: 
   name: Assault Rifle
-  description: This item lacks a description.
+  description: Strong, reliable and fully automatic.
   maxStackSize: 1
-  gameObject: {fileID: 1398092796068152, guid: ffdcc5c0f66e2ae43a1b2d752f249b32, type: 2}
+  gameObject: {fileID: 1570332510085560, guid: 9d4db7a722989924f854f4cd07802f96, type: 2}
   icon: {fileID: 0}
   model: {fileID: 0}
   type: 4

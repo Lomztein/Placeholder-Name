@@ -5,6 +5,6 @@ using UnityEngine;
 
 public interface IEquipable {
 
-    Equipment.Type Type { get; set; }
+    CharacterEquipment.Type Type { get; set; }
 
 }

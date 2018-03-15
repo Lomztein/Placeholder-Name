@@ -11,7 +11,7 @@ namespace Lomztein.PlaceholderName.Utility {
         }
 
         public static float CalculateAngleXZ(Vector3 from, Vector3 to) {
-            return -Mathf.Rad2Deg * Mathf.Atan2 (to.z - from.z, to.x - from.x) - 180;
+            return -Mathf.Rad2Deg * Mathf.Atan2 (to.z - from.z, to.x - from.x) + 90;
         }
 
         public static float AngleBetween(Vector3 from, Vector3 to) {

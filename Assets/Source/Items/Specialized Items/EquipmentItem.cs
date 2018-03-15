@@ -8,8 +8,8 @@ namespace Lomztein.PlaceholderName.Items {
     [CreateAssetMenu (fileName = "New Equipment", menuName = "Items/Equipment")]
     public class EquipmentItem : ItemPrefab, IEquipable {
 
-        public Characters.Equipment.Type Type { get { return type; } set { type = value; } }
-        public Characters.Equipment.Type type;
+        public CharacterEquipment.Type Type { get { return type; } set { type = value; } }
+        public CharacterEquipment.Type type;
 
     }
 

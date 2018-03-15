@@ -40,7 +40,12 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         public static ItemSlot FindItemByPredicate(this IContainer container, Func<ItemSlot, bool> predicate) {
-            return container.ItemSlots.FirstOrDefault (predicate);
+            foreach (ItemSlot slot in container.ItemSlots) {
+                if (slot.item != null && predicate (slot)) {
+                    return slot;
+                }
+            }
+            return null;
         }
 
         public static void CallOnItemChangedEvent(this IContainer container, Item oldItem, Item newItem) {
