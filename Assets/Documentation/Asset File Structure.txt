@@ -1,0 +1,5 @@
+For the most part stuff should be ordered as the names describe, and most names should be fairly self-explanatory.
+
+Two notable folders are Source and Prefabs in the Models folder.
+	- Source should only ever be freshly implemented models.
+	- Prefabs are source models that have been scaled, named and oriented correctly, and otherwise fully imported.
