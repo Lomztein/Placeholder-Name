@@ -50,6 +50,9 @@ namespace Lomztein.PlaceholderName.Characters {
         /// </summary>
         public event CharacterUseToolEvent OnToolReleased;
 
+        public delegate void OnKilledEvent(Character killer);
+        public event OnKilledEvent OnKilled;
+
         public float GetHealth() {
             return health.GetModifiers ().Sum (x => x.value.health);
         }
@@ -86,6 +89,9 @@ namespace Lomztein.PlaceholderName.Characters {
         }
 
         public void Kill () {
+            if (OnKilled != null)
+                OnKilled (null);
+
             Destroy (gameObject);
         }
 

@@ -97,7 +97,7 @@ namespace Lomztein.PlaceholderName.Weaponary {
             );
 
             if (withAmmo)
-                withAmmo.MoveItem (ammoSlot, space);
+                withAmmo.MoveItem (ammoSlot);
 
             Rechamber ();
         }

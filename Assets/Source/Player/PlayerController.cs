@@ -12,18 +12,30 @@ namespace Lomztein.PlaceholderName.Player {
         public Humanoid character;
         public Inventory inventory;
 
-        public static ItemSlot itemInHand;
+        public static ItemSlot itemInHand; // itemInHand and related functionality should perhaps be seperate from PlayerController, so inventories can be managed even with no player character.
+        public static Transform itemModel;
+        public LayerMask physicalItemLayer;
 
         public LayerMask groundLayer;
+        public Vector3 mouseWorldPos;
 
         private void Start() {
             character = GetComponent<Humanoid> ();
             itemInHand = ItemSlot.CreateSlot (null);
+            itemInHand.OnItemChanged += ItemInHand_OnItemChanged;
+        }
+
+        private void ItemInHand_OnItemChanged(ItemSlot itemSlot, Item oldItem, Item newItem) {
+            if (itemModel)
+                Destroy (itemModel.gameObject);
+            if (newItem != null)
+                itemModel = newItem.GetModelInstance ().transform;
         }
 
         // Update is called once per frame
         void Update() {
             UpdateMovement ();
+            UpdateAim ();
             if (Input.GetKeyDown (KeyCode.I)) {
                 inventory.Display ();
             }
@@ -32,6 +44,10 @@ namespace Lomztein.PlaceholderName.Player {
                 character.HoldTool (character.equipment.GetSlot (CharacterEquipment.Type.Tool).currentObject.GetComponent<Tool> ());
             }
 
+            if (itemModel) {
+                itemModel.position = mouseWorldPos + Vector3.up + Vector3.up * Mathf.Sin (Time.time) * 0.2f;
+                itemModel.Rotate (0f, 60f * Time.deltaTime, 0f);
+            }
         }
 
         private void UpdateMovement() {
@@ -41,16 +57,28 @@ namespace Lomztein.PlaceholderName.Player {
                 z = Input.GetAxis ("Vertical")
             };
             moveDirection.Normalize ();
+            character.Move (moveDirection, Time.deltaTime);
+
+        }
+
+        private void UpdateAim () {
 
             Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
             RaycastHit hitInfo;
 
             if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity, groundLayer)) {
-                Vector3 mousePosition = hitInfo.point;
-                character.Aim (mousePosition + Vector3.up, Time.deltaTime);
+                mouseWorldPos = hitInfo.point;
+                character.Aim (mouseWorldPos + Vector3.up, Time.deltaTime);
             }
 
-            character.Move (moveDirection, Time.deltaTime);
+            if (Input.GetMouseButtonDown (0)) {
+                if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity, physicalItemLayer)) {
+                    if (itemInHand.item != null)
+                        PhysicalItem.Create (itemInHand, itemModel.position, itemModel.rotation);
+                    PhysicalItem item = hitInfo.collider.GetComponent<PhysicalItem> ();
+                    item.slot.MoveItem (itemInHand);
+                }
+            }
 
         }
     }

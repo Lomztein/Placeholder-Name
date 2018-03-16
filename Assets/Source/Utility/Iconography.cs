@@ -18,13 +18,14 @@ namespace Lomztein.PlaceholderName.Utility {
             gameObject.SetActive (false);
         }
 
-        public static GameObject GenerateModel (GameObject source) {
+        public static GameObject GenerateModel (GameObject source, Vector3 position, Quaternion rotation) {
             // First create object and strip away all non-transform non-renderer components.
-            GameObject model = Instantiate (source, iconography.transform.position, Quaternion.identity, iconography.transform);
-            List<Component> nonVitals = model.GetComponentsInChildren<Component> ().Where (x => !(x is Transform) && !(x is Renderer)).ToList ();
+            GameObject model = Instantiate (source, position, rotation, iconography.transform);
+            List<Component> nonVitals = model.GetComponentsInChildren<Component> ().Where (x => !(x is Transform) && !(x is Renderer) && !(x is MeshFilter)).ToList ();
             foreach (Component comp in nonVitals) {
                 Destroy (comp); // Might not be neccesary, test sometime.
             }
+
             return model;
         }
 
@@ -35,7 +36,7 @@ namespace Lomztein.PlaceholderName.Utility {
             renderCamera.enabled = true;
             renderCamera.aspect = 1f;
 
-            GameObject model = GenerateModel (obj);
+            GameObject model = GenerateModel (obj, iconography.transform.position, Quaternion.identity);
 
             RenderTexture renderTexture = new RenderTexture (renderSize, renderSize, 24);
             renderTexture.Create ();
@@ -69,6 +70,12 @@ namespace Lomztein.PlaceholderName.Utility {
         }
 
         public static Bounds GetObjectBounds(GameObject obj) {
+            Vector3 prevPos = obj.transform.position;
+            Quaternion prevRot = obj.transform.rotation;
+
+            obj.transform.position = Vector3.zero;
+            obj.transform.rotation = Quaternion.identity;
+
             MeshFilter [ ] filters = obj.GetComponentsInChildren<MeshFilter> ();
 
             CombineInstance [ ] instances = new CombineInstance [ filters.Length ];
@@ -80,6 +87,9 @@ namespace Lomztein.PlaceholderName.Utility {
             Mesh newMesh = new Mesh ();
             newMesh.CombineMeshes (instances);
             newMesh.RecalculateBounds ();
+
+            obj.transform.position = prevPos;
+            obj.transform.rotation = prevRot;
 
             return newMesh.bounds;
         }
