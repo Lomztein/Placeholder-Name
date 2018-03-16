@@ -38,7 +38,7 @@ namespace Lomztein.PlaceholderName.Items {
             }
 
             GetComponent<Inventory> ().PlaceItems (ItemSlots.ToArray ());
-            toEquip.ForEach (x => GetComponent<Character> ().equipment.Equip (x));
+            toEquip.ForEach (x => GetComponent<Character> ().equipment.QuickEquip (x));
         }
 
         [System.Serializable]

@@ -21,7 +21,7 @@ namespace Lomztein.PlaceholderName.Characters {
             HumanoidHead, HumanoidTorso, HumanoidLegs, HumanoidFeet, Tool
         }
 
-        public void Equip (ItemSlot sourceSlot) {
+        public void QuickEquip (ItemSlot sourceSlot) {
             Type type = (sourceSlot.item.prefab as IEquipable).Type;
             Slot slot = GetSlot (type);
             if (slot != null)
@@ -69,8 +69,14 @@ namespace Lomztein.PlaceholderName.Characters {
             public static Slot CreateSlot (SlotDefinition _definition) {
                 Slot slot = CreateInstance<Slot> ();
                 slot.definition = _definition;
+                slot.emptyIcon = _definition.emptySlotIcon;
 
                 return slot;
+            }
+
+            public override bool AllowItem(ItemPrefab prefab) {
+                IEquipable equipable = prefab as IEquipable;
+                return (equipable != null && equipable.Type == definition.equipmentType);
             }
         }
 

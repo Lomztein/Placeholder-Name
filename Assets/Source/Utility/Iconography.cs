@@ -20,7 +20,7 @@ namespace Lomztein.PlaceholderName.Utility {
 
         public static GameObject GenerateModel (GameObject source, Vector3 position, Quaternion rotation) {
             // First create object and strip away all non-transform non-renderer components.
-            GameObject model = Instantiate (source, position, rotation, iconography.transform);
+            GameObject model = Instantiate (source, position, rotation);
             List<Component> nonVitals = model.GetComponentsInChildren<Component> ().Where (x => !(x is Transform) && !(x is Renderer) && !(x is MeshFilter)).ToList ();
             foreach (Component comp in nonVitals) {
                 Destroy (comp); // Might not be neccesary, test sometime.
@@ -47,7 +47,7 @@ namespace Lomztein.PlaceholderName.Utility {
             renderCamera.orthographicSize = camSize;
 
             renderCamera.targetTexture = renderTexture;
-            renderCamera.transform.position = bounds.center + renderCamera.transform.forward * Mathf.Max (bounds.extents.x, bounds.extents.y, bounds.extents.z) * -2f;
+            renderCamera.transform.position = iconography.transform.position + bounds.center + renderCamera.transform.forward * Mathf.Max (bounds.extents.x, bounds.extents.y, bounds.extents.z) * -2f;
             renderCamera.Render ();
 
             RenderTexture.active = renderTexture;

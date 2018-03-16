@@ -33,19 +33,8 @@ namespace Lomztein.PlaceholderName.UI {
             }
 
             UpdateUI ();
-
-            container.OnItemsChanged += OnInventoryChanged;
         }
 
-        private void OnInventoryChanged(Item oldItem, Item newItem) {
-            UpdateUI ();
-        }
-
-        private void OnDisable() {
-            container.OnItemsChanged -= OnInventoryChanged;
-        }
-
-        // Update is called once per frame
         void UpdateUI() {
             foreach (var butt in buttons) {
                 butt.UpdateUI ();

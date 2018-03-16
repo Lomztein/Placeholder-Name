@@ -10,7 +10,7 @@ namespace Lomztein.PlaceholderName.Items {
 
         public ItemPrefab prefab;
 
-        private Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute> ();
+        private Dictionary<string, Metadata> metadata = new Dictionary<string, Metadata> ();
 
         public virtual Texture2D GetIcon() {
             if (prefab.icon != null)
@@ -31,34 +31,34 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         public T GetAttribute<T>(string attributeName) {
-            return (T)attributes [ attributeName ].entry;
+            return (T)metadata [ attributeName ].entry;
         }
 
         public void SetAttribute(string attributeName, object obj) {
-            if (!attributes.ContainsKey (attributeName))
-                attributes.Add (attributeName, new Attribute (attributeName));
-            attributes [ attributeName ].entry = obj;
+            if (!metadata.ContainsKey (attributeName))
+                metadata.Add (attributeName, new Metadata (attributeName));
+            metadata [ attributeName ].entry = obj;
         }
 
         public override string ToString() {
             return prefab.name;
         }
 
-        public class Attribute {
+        public class Metadata {
 
             public string name;
             public object entry;
 
-            public Attribute(string _name) {
+            public Metadata(string _name) {
                 name = _name;
             }
         }
 
         public static bool Equals(Item slotOne, Item slotTwo) {
-            return (slotOne && slotTwo && slotOne.prefab == slotTwo.prefab && Item.Equals (slotOne.attributes, slotTwo.attributes));
+            return (slotOne && slotTwo && slotOne.prefab == slotTwo.prefab && Item.Equals (slotOne.metadata, slotTwo.metadata));
         }
 
-        public static bool Equals(Dictionary<string, Attribute> attributesOne, Dictionary<string, Attribute> attributesTwo) {
+        public static bool Equals(Dictionary<string, Metadata> attributesOne, Dictionary<string, Metadata> attributesTwo) {
             if (attributesOne.Count == 0 && attributesTwo.Count == 0)
                 return true;
 

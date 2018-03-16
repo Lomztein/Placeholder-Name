@@ -24,7 +24,7 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         private void Slot_OnItemChanged(ItemSlot itemSlot, Item oldItem, Item newItem) {
-            if (newItem == null)
+            if (slot.item == null)
                 Destroy (gameObject);
             else
                 UpdateGraphics ();
@@ -48,6 +48,7 @@ namespace Lomztein.PlaceholderName.Items {
             model = Iconography.GenerateModel (slot.item.GetModelInstance (), transform.position, transform.rotation);
             Bounds bounds = Iconography.GetObjectBounds (model);
 
+            bounds.Expand (0.1f);
             collider.center = bounds.center;
             collider.size = bounds.size;
 

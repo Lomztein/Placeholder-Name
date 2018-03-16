@@ -13,9 +13,6 @@ namespace Lomztein.PlaceholderName.Weaponary {
 
         public ItemSlot ammoSlot;
 
-        public GameObject projectilePrefab;
-        public IProjectile projectile;
-        
         public enum AmmoType { Pistol, Rifle, Shotgun }
         public AmmoType ammoType;
 
@@ -54,20 +51,12 @@ namespace Lomztein.PlaceholderName.Weaponary {
             ammoSlot.maxItems = magazineCapacity;
             ammoSlot.lockedType = typeof (IAmmo);
 
-            ammoSlot.maxItems = magazineCapacity;
-            ammoSlot.OnItemChanged += ChangeAmmoType;
-
             Reload ();
             Rechamber ();
         }
 
         public override void OnUseHeld() {
             StartCoroutine (Fire ());
-        }
-
-        private void ChangeAmmoType(ItemSlot slot, Item oldItem, Item newItem) {
-            projectilePrefab = ammoSlot.item.prefab.gameObject;
-            projectile = projectilePrefab.GetComponent<IProjectile> ();
         }
 
         public override void OnUnequip(Character character, CharacterEquipment.Slot slot) {
@@ -83,18 +72,13 @@ namespace Lomztein.PlaceholderName.Weaponary {
         }
 
         public void Reload() {
-            int space = ammoSlot.maxItems - ammoSlot.count;
-            ItemSlot withAmmo = parentCharacter.inventory.FindItemByPredicate (x => x.item.prefab.gameObject == projectilePrefab);
-
-            if (withAmmo == null)
-                withAmmo = parentCharacter.inventory.FindItemByPredicate (x => {
-                    IAmmo ammoPrefab = x.item.prefab as IAmmo;
-                    if (ammoPrefab != null) {
-                        return ammoPrefab.AmmoType == ammoType;
-                    }
-                    return false;
+            ItemSlot withAmmo = parentCharacter.inventory.FindItemByPredicate (x => {
+                IAmmo ammoPrefab = x.item.prefab as IAmmo;
+                if (ammoPrefab != null) {
+                    return ammoPrefab.AmmoType == ammoType;
                 }
-            );
+                return false;
+            });
 
             if (withAmmo)
                 withAmmo.MoveItem (ammoSlot);
@@ -115,7 +99,10 @@ namespace Lomztein.PlaceholderName.Weaponary {
         }
 
         private IEnumerator Fire () {
+
             if (chambered && HasAmmo) {
+
+                IProjectile projectile = ammoSlot.item.prefab.gameObject.GetComponent<IProjectile> ();
 
                 chambered = false;
                 Invoke ("Rechamber", GetFirerate ());
@@ -132,12 +119,12 @@ namespace Lomztein.PlaceholderName.Weaponary {
 
                 }
 
-                if (ammoSlot.count == 0) {
-                    if (!IsInvoking ("Reload"))
-                        Invoke ("Reload", GetReloadRate ());
-                    yield break;
-                }
+            }
 
+            if (ammoSlot.count == 0) {
+                if (!IsInvoking ("Reload"))
+                    Invoke ("Reload", GetReloadRate ());
+                yield break;
             }
         }
     }

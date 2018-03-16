@@ -6,10 +6,6 @@ namespace Lomztein.PlaceholderName.Weaponary {
 
     public interface IDamageable {
 
-        float GetHealth();
-
-        float GetMaxHealth();
-
         void TakeDamage(Damage damage);
 
     }

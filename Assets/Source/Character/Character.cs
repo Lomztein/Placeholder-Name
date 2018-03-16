@@ -1,6 +1,7 @@
 ﻿using Lomztein.PlaceholderName.Characters.Extensions;
 using Lomztein.PlaceholderName.Characters.PhysicalEquipment;
 using Lomztein.PlaceholderName.Characters.SerializableStats;
+using Lomztein.PlaceholderName.Interfaces;
 using Lomztein.PlaceholderName.Items;
 using Lomztein.PlaceholderName.Weaponary;
 using System.Collections;
@@ -13,7 +14,7 @@ namespace Lomztein.PlaceholderName.Characters {
     /// <summary>
     /// Character represents any entity with basic "living" functionality, such as health, armor, and a controller.
     /// </summary>
-    public class Character : MonoBehaviour, IDamageable, IKillable {
+    public class Character : MonoBehaviour, IDamageable, IKillable, IHasHealth {
 
         [Header ("Stats")]
         public HealthStat health = new HealthStat ("Health", new Health (new FloatStat ("Base Health", 100f)));
@@ -54,11 +55,11 @@ namespace Lomztein.PlaceholderName.Characters {
         public event OnKilledEvent OnKilled;
 
         public float GetHealth() {
-            return health.GetModifiers ().Sum (x => x.value.health);
+            return health.GetAllValues ().Sum (x => x.health);
         }
 
         public float GetMaxHealth() {
-            return health.GetModifiers ().Sum (x => x.value.maxHealth.GetAdditiveValue ());
+            return health.GetAllValues ().Sum (x => x.maxHealth.GetAdditiveValue ());
         }
 
         public void TakeDamage(Damage damage) {
@@ -103,7 +104,6 @@ namespace Lomztein.PlaceholderName.Characters {
             if (evt != null)
                 evt (tool);
         }
-
     }
 
 }

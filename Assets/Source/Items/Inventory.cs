@@ -33,16 +33,7 @@ namespace Lomztein.PlaceholderName.Items {
 
         public void Display () {
             Vector2 position = Camera.main.WorldToScreenPoint (transform.position);
-            DisplayInventory (this, position);
+            InventoryUI.DisplayInventory (this, position);
         }
-
-        public static InventoryUI DisplayInventory (Inventory inventory, Vector2 screenPosition) {
-            GameObject prefab = Resources.Load<GameObject> ("UI/InventoryPanel");
-            InventoryUI ui = Instantiate (prefab, screenPosition, Quaternion.identity).GetComponent<InventoryUI> ();
-            ui.transform.SetParent (UIManager.mainCanvas.transform, true);
-            ui.CreateUI (inventory);
-            return ui;
-        }
-
     }
 }

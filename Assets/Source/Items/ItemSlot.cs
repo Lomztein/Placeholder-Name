@@ -14,6 +14,7 @@ namespace Lomztein.PlaceholderName.Items {
         public int count;
         public Type lockedType;
         public int maxItems = int.MaxValue;
+        public Texture2D emptyIcon;
         public IContainer parentContainer;
 
         public static ItemSlot CreateSlot(IContainer parentContainer) {
@@ -30,7 +31,36 @@ namespace Lomztein.PlaceholderName.Items {
             }
         }
 
-        public void ChangeCount(int addition) {
+        /// <summary>
+        /// Supposed to be overwritten by specialized slots that only take in certain items, for example.
+        /// </summary>
+        /// <param name="prefab"></param>
+        /// <returns></returns>
+        public virtual bool AllowItem (ItemPrefab prefab) {
+            if (lockedType != null)
+                return lockedType.IsInstanceOfType (prefab);
+            return true;
+        }
+
+        public int GetAvailableSpace() {
+            if (item) {
+                return GetMaxItems () - count;
+            } else
+                return GetMaxItems ();
+        }
+
+        public int GetMaxItems () {
+            if (item)
+                return Mathf.Min (maxItems, item.prefab.maxStackSize);
+            else
+                return maxItems;
+        }
+
+        public void ChangeCount (int addition) {
+            ChangeCount (addition, true);
+        }
+
+        private void ChangeCount(int addition, bool fireEvent) {
             count += addition;
 
             if (count < 0)
@@ -38,6 +68,9 @@ namespace Lomztein.PlaceholderName.Items {
 
             if (count == 0)
                 RemoveItem ();
+
+            if (fireEvent)
+                CallOnChangedEvent (item, item);
         }
 
         public void RemoveItem() {
@@ -46,9 +79,12 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         public void SetItem (Item newItem, int amount) {
+            RemoveItem ();
+
             Item oldItem = item;
+
             item = newItem;
-            ChangeCount (amount);
+            ChangeCount (amount, false);
 
             CallOnChangedEvent (oldItem, newItem);
         }
@@ -60,6 +96,7 @@ namespace Lomztein.PlaceholderName.Items {
             parentContainer.CallOnItemChangedEvent (oldItem, newItem);
         }
 
+        // This entire method could use a rewrite, partly because it's strange to use in practice, second to figure out how it works.
         public void MoveItem(ItemSlot newSlot, int transferCount = -1, bool oppisiteStack = false) {
             // Remember: Clicking an inventory button moves the buttons slot into the hand, ergo it calls this function with the hand slot as newSlot.
 
@@ -69,17 +106,18 @@ namespace Lomztein.PlaceholderName.Items {
             int otherCount = newSlot.count;
 
             if (transferCount == -1)
-                transferCount = Mathf.Min (count, newSlot.maxItems);
+                transferCount = Mathf.Min (count, newSlot.GetAvailableSpace ());
 
-            if (oldItem && newSlot.lockedType != null && !newSlot.lockedType.IsInstanceOfType (oldItem.prefab)) {
+            if (oldItem && !newSlot.AllowItem (oldItem.prefab))
                 return;
-            }
+            if (newItem && !AllowItem (newItem))
+                return;
 
             if (Item.Equals (oldItem, newItem)) {
 
                 // Both sides have items, are the same item and metadata.
                 int total = otherCount + transferCount;
-                int max = Mathf.Min (oldItem.prefab.maxStackSize, maxItems);
+                int max = Mathf.Min (oldItem.prefab.maxStackSize, GetMaxItems ());
 
                 if (total <= max) {
                     newSlot.ChangeCount (transferCount);
@@ -104,21 +142,17 @@ namespace Lomztein.PlaceholderName.Items {
                 // isn't the entire stack, do nothing.
 
                 if (newSlot.item == null) {
-                    newSlot.count = transferCount;
-                    newSlot.item = item;
 
+                    newSlot.SetItem (item, transferCount);
                     ChangeCount (-transferCount);
-                } else if (transferCount == count) {
-                    newSlot.count = count;
-                    newSlot.item = item;
 
-                    item = newItem;
-                    count = otherCount;
+                } else if (transferCount == count) {
+
+                    newSlot.SetItem (oldItem, count);
+                    SetItem (newItem, otherCount);
+
                 }
             }
-
-            CallOnChangedEvent (oldItem, newItem);
-            newSlot.CallOnChangedEvent (newItem, oldItem);
         }
     }
 }

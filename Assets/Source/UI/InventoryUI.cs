@@ -6,20 +6,24 @@ using UnityEngine.UI;
 
 namespace Lomztein.PlaceholderName.UI {
 
-    public class InventoryUI : MonoBehaviour {
+    public class InventoryUI : UIWindow {
 
         public Text headerText;
 
         public Inventory inventory;
         public ContainerUI containerUI;
 
-        public int columns;
-
-        public void CreateUI(Inventory _inventory) {
+        public void CreateUI(Inventory _inventory, GridLayoutGroup.Constraint constraint = GridLayoutGroup.Constraint.FixedColumnCount, int constraintCount = 6) {
             inventory = _inventory;
             headerText.text = inventory.name;
 
-            containerUI.CreateUI (inventory, GridLayoutGroup.Constraint.FixedColumnCount, columns);
+            containerUI.CreateUI (inventory, constraint, constraintCount);
+        }
+
+        public static InventoryUI DisplayInventory(Inventory inventory, Vector2 screenPosition) {
+            InventoryUI ui = UIManager.CreateFromResource<InventoryUI> ("UI/InventoryPanel", screenPosition);
+            ui.CreateUI (inventory);
+            return ui;
         }
     }
 

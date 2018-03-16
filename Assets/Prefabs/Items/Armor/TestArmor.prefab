@@ -36,7 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4673692487631318}
-  - component: {fileID: 114280572162227028}
+  - component: {fileID: 114998531251153800}
   m_Layer: 0
   m_Name: TestArmor
   m_TagString: Untagged
@@ -112,7 +112,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1630776999318370}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114280572162227028
+--- !u!114 &114998531251153800
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -120,7 +120,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1883522944084154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ff55f2af783b4943b12296ed33ba4f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 3db7d62e565fb2446b445e425e942109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armorRating: 0.5
+  parentSlot: {fileID: 0}
+  parentCharacter: {fileID: 0}
+  equipmentAttributes:
+  - {fileID: 11400000, guid: 0f18398e9b5ba7240be6e340cb387b72, type: 2}

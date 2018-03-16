@@ -12,7 +12,11 @@ namespace Lomztein.PlaceholderName.Items {
         public static void PlaceItems(this IContainer container, params ItemSlot [ ] items) {
             for (int i = 0; i < items.Length; i++) {
                 ItemSlot loc = items [ i ];
-                while (loc.count != 0) {
+
+                int maxTries = container.ItemSlots.Count;
+                while (loc.count != 0 && maxTries > 1) {
+
+                    maxTries--; // This should force it to quit after trying at least to move one into every single slot.
                     ItemSlot s = container.FindAvailableSlot (loc.item);
                     if (s) {
                         loc.MoveItem (s);
@@ -23,16 +27,16 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         public static ItemSlot FindAvailableSlot(this IContainer container, Item movingItem = null) {
-            foreach (ItemSlot s in container.ItemSlots) {
+            foreach (ItemSlot slot in container.ItemSlots) {
 
                 // If the slot already has an item, compare to moving item and return if stackable.
-                if (s.item && movingItem && s.count != movingItem.prefab.maxStackSize) {
-                    if (Equals (s.item, movingItem)) {
-                        return s;
+                if (slot.item && movingItem && slot.GetAvailableSpace () != 0) {
+                    if (Item.Equals (slot.item, movingItem)) {
+                        return slot;
                     }
                 } else {
-                    if (!s.item)
-                        return s;
+                    if (!slot.item)
+                        return slot;
                 }
             }
 
