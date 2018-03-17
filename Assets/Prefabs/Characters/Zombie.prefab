@@ -131,10 +131,14 @@ MonoBehaviour:
     chance: 100
     minAmount: 5
     maxAmount: 15
-  - itemPrefab: {fileID: 11400000, guid: acf8a36e5c0f5524b89fc633688a2e0e, type: 2}
+  - itemPrefab: {fileID: 11400000, guid: ff14679eab8692647a14975f289a5cb7, type: 2}
     chance: 25
     minAmount: 2
     maxAmount: 10
+  - itemPrefab: {fileID: 11400000, guid: 02dfeb638230c384284794751dd7a582, type: 2}
+    chance: 5
+    minAmount: 1
+    maxAmount: 1
   minScatterSpeed: 1
   maxScatterSpeed: 1
 --- !u!114 &114665816608206846
