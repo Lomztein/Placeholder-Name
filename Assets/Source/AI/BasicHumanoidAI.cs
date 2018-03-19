@@ -14,9 +14,6 @@ namespace Lomztein.PlaceholderName.AI {
 
         public Humanoid humanoid;
 
-        private CharacterEquipment.Slot toolSlot;
-        private Tool currentTool;
-
         public Transform target;
 
         public float sightRange;
@@ -26,16 +23,7 @@ namespace Lomztein.PlaceholderName.AI {
 
         public float attackDelayTime;
         public float attackBurstTime;
-
-        // Use this for initialization
-        void Start() {
-            toolSlot = humanoid.equipment.GetSlot (CharacterEquipment.Type.Tool);
-            toolSlot.OnItemChanged += ToolSlot_OnItemChanged;
-        }
-
-        private void ToolSlot_OnItemChanged(ItemSlot itemSlot, Item oldItem, Item newItem) {
-            currentTool = toolSlot.currentObject.GetComponent<Tool> ();
-        }
+        private Vector3 attackPoint;
 
         // Update is called once per frame
         void Update() {
@@ -44,11 +32,11 @@ namespace Lomztein.PlaceholderName.AI {
                 humanoid.Move (Vector3.zero, Time.deltaTime);
             } else {
                 float distanceToTarget = Vector3.Distance (target.position, transform.position);
+                humanoid.Aim (attackPoint, Time.deltaTime);
 
                 if (!isAttacking) {
+                    attackPoint = target.position + humanoid.center;
                     Vector3 direction = (target.position - transform.position).normalized;
-
-                    humanoid.Aim (target.position + humanoid.center, Time.deltaTime);
 
                     if (distanceToTarget < attackRange) {
                         humanoid.Move (Vector3.zero, Time.deltaTime);
@@ -71,7 +59,7 @@ namespace Lomztein.PlaceholderName.AI {
             float remainingAttackTime = attackBurstTime;
             while (remainingAttackTime > 0f) {
 
-                humanoid.HoldTool (currentTool);
+                humanoid.HoldTool (humanoid.currentTool);
                 remainingAttackTime -= Time.deltaTime;
 
                 yield return null;

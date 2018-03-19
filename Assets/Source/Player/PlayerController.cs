@@ -16,9 +16,6 @@ namespace Lomztein.PlaceholderName.Player {
         public static Transform itemModel;
         public LayerMask physicalItemLayer;
 
-        private CharacterEquipment.Slot toolSlot;
-        private Tool currentTool;
-
         public LayerMask groundLayer;
         public Vector3 mouseWorldPos;
 
@@ -26,12 +23,6 @@ namespace Lomztein.PlaceholderName.Player {
             character = GetComponent<Humanoid> ();
             itemInHand = ItemSlot.CreateSlot (null);
             itemInHand.OnItemChanged += ItemInHand_OnItemChanged;
-            toolSlot = character.equipment.GetSlot (CharacterEquipment.Type.Tool);
-            toolSlot.OnItemChanged += ToolSlot_OnItemChanged;
-        }
-
-        private void ToolSlot_OnItemChanged(ItemSlot itemSlot, Item oldItem, Item newItem) {
-            currentTool = toolSlot.currentObject.GetComponent<Tool> ();
         }
 
         private void ItemInHand_OnItemChanged(ItemSlot itemSlot, Item oldItem, Item newItem) {
@@ -49,8 +40,8 @@ namespace Lomztein.PlaceholderName.Player {
                 inventory.Display ();
             }
 
-            if (Input.GetMouseButton (0) && currentTool) {
-                character.HoldTool (currentTool);
+            if (Input.GetMouseButton (0) && character.currentTool) {
+                character.HoldTool (character.currentTool);
             }
 
             if (itemModel) {
@@ -65,6 +56,9 @@ namespace Lomztein.PlaceholderName.Player {
                 x = Input.GetAxis ("Horizontal"),
                 z = Input.GetAxis ("Vertical")
             };
+
+            moveDirection = Quaternion.Euler (0f, Camera.main.transform.eulerAngles.y, 0f) * moveDirection;
+
             moveDirection.Normalize ();
             character.Move (moveDirection, Time.deltaTime);
 

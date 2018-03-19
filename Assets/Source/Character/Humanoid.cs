@@ -1,5 +1,7 @@
 ﻿using Lomztein.PlaceholderName.Characters.Extensions;
+using Lomztein.PlaceholderName.Characters.PhysicalEquipment;
 using Lomztein.PlaceholderName.Characters.SerializableStats;
+using Lomztein.PlaceholderName.Items;
 using Lomztein.PlaceholderName.Utility;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,32 +16,54 @@ namespace Lomztein.PlaceholderName.Characters {
     public class Humanoid : Character, IControllable {
 
         public const float naturalAnimationSpeed = 12f;
-        public const float animationAimDegrees = 45f;
+        public const float aimTreshold = 45f;
+        public const float aimLerpTime = 2f;
 
         public CharacterController character;
-        public Transform toolTransform;
+
         private Vector3 gravVel = Vector3.zero;
 
+        public float movementAngle;
         private float angle;
         private float animationAngle;
 
         private Vector3 movement;
 
+        public Transform toolTransform;
+        public CharacterEquipment.Slot toolSlot;
+        public Tool currentTool;
+
         public Animator humanoidAnimator;
+
+        void Start() {
+            toolSlot = equipment.GetSlot (CharacterEquipment.Type.Tool);
+            toolSlot.OnItemChanged += ToolSlot_OnItemChanged;
+        }
+
+        private void ToolSlot_OnItemChanged(ItemSlot itemSlot, Item oldItem, Item newItem) {
+            currentTool = toolSlot.currentObject.GetComponent<Tool> ();
+        }
 
         public void Aim(Vector3 point, float deltaTime) {
             if (movement.sqrMagnitude < 0.1f)
                 movement = (point - transform.position).normalized;
 
             angle = Trigonometry.CalculateAngleXZ (transform.position, point);
-            transform.rotation = Quaternion.Euler (0f, Trigonometry.CalculateAngleXZ (transform.position, point), 0f);
+            float delta = Mathf.DeltaAngle (movementAngle, angle);
+            float sign = Mathf.Sign (delta);
+
+            if (Mathf.Abs (delta) > aimTreshold)
+                movementAngle += (delta - aimTreshold * sign);
+            else
+                movementAngle = Mathf.LerpAngle (movementAngle, angle, aimLerpTime * deltaTime);
+
+            transform.rotation = Quaternion.Euler (0f, movementAngle, 0f);
             toolTransform.LookAt (point);
         }
 
         public void Move(Vector3 direction, float deltaTime) {
-            if (direction.sqrMagnitude > 0.1f)
+            if (movement.sqrMagnitude > 0.1f)
                 movement = direction;
-
             character.Move ((direction * speed.GetAdditiveValue () + gravVel) * deltaTime);
         }
 
@@ -48,19 +72,19 @@ namespace Lomztein.PlaceholderName.Characters {
             float speed01 = character.velocity.magnitude / maxSpeed;
             humanoidAnimator.speed = maxSpeed / naturalAnimationSpeed;
 
-            float movementAngle = Trigonometry.CalculateAngleXZ (transform.position, transform.position + movement); // The angle that the character is moving towards.
-            float relative = Mathf.DeltaAngle (angle, movementAngle); // The delta-angle between the looking and the movement angle.
+            float aimAngle = Trigonometry.CalculateAngleXZ (transform.position, transform.position + movement); // The angle that the character is moving towards.
+            float relative = Mathf.DeltaAngle (aimAngle, movementAngle); // The delta-angle between the looking and the movement angle.
+
+            animationAngle = Mathf.DeltaAngle (movementAngle, angle);
 
             Vector2 blendVector = new Vector2 (
                 Mathf.Cos (relative * Mathf.Deg2Rad) * speed01,
                 Mathf.Sin (relative * Mathf.Deg2Rad) * speed01
                 );
 
-            animationAngle = Mathf.Sin (Time.time) * animationAimDegrees;
-
             humanoidAnimator.SetFloat ("DirectionX", blendVector.x);
             humanoidAnimator.SetFloat ("DirectionY", blendVector.y);
-            humanoidAnimator.SetFloat ("AimAngle", (animationAngle + animationAimDegrees) / (animationAimDegrees * 2f));
+            humanoidAnimator.SetFloat ("AimAngle", (animationAngle + aimTreshold) / (aimTreshold * 2f));
         }
 
         public override void FixedUpdate() {

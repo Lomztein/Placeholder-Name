@@ -56,7 +56,7 @@ namespace Lomztein.PlaceholderName.Characters {
         public event OnKilledEvent OnKilled;
 
         public virtual void FixedUpdate () {
-            health.TakeDamage (-regeneration.GetAdditiveValue ());
+            health.TakeDamage (-regeneration.GetAdditiveValue () * Time.fixedDeltaTime);
         }
 
         public float GetHealth() {
