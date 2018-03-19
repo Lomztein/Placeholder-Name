@@ -76,7 +76,7 @@ namespace Lomztein.PlaceholderName.Characters {
 
             public override bool AllowItem(ItemPrefab prefab) {
                 IEquipable equipable = prefab as IEquipable;
-                return (equipable != null && equipable.Type == definition.equipmentType);
+                return (equipable != null && equipable.Type == definition.equipmentType && base.AllowItem (prefab));
             }
         }
 

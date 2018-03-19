@@ -7,13 +7,11 @@ namespace Lomztein.PlaceholderName.Characters.Attributes {
     [CreateAssetMenu (fileName = "New Armor Attribute", menuName = "Attributes/Armor")]
     public class ArmorAttribute : Attribute {
 
-        public float armorRating;
-
-        public override void Enable(Character toCharacter, object source) {
-            toCharacter.armor.AddModifier (source, armorRating);
+        public override void Activate(Character toCharacter, object source, float multiplier) {
+            toCharacter.armor.AddModifier (source, multiplier);
         }
 
-        public override void Disable(Character toCharacter, object source) {
+        public override void Deactivate(Character toCharacter, object source) {
             toCharacter.armor.RemoveModifier (source);
         }
     }

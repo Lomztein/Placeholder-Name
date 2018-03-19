@@ -33,19 +33,21 @@ namespace Lomztein.PlaceholderName.Items {
         public static PhysicalItem Create (ItemSlot from, Vector3 position, Quaternion rotation) {
             PhysicalItem physical = Create (position, rotation);
             from.MoveItem (physical.slot);
-            physical.UpdateGraphics ();
             return physical;
         }
 
         public static PhysicalItem Create (Item item, int amount, Vector3 position, Quaternion rotation) {
             PhysicalItem physical = Create (position, rotation);
             physical.slot.SetItem (item, amount);
-            physical.UpdateGraphics ();
             return physical;
         }
 
         public void UpdateGraphics () {
-            model = Iconography.GenerateModel (slot.item.GetModelInstance (), transform.position, transform.rotation);
+
+            model = slot.item.GetModelInstance ();
+            model.transform.position = transform.position;
+            model.transform.rotation = transform.rotation;
+
             Bounds bounds = Iconography.GetObjectBounds (model);
 
             bounds.Expand (0.1f);

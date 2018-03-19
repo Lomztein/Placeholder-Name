@@ -14,7 +14,7 @@ namespace Lomztein.PlaceholderName.Items {
                 ItemSlot loc = items [ i ];
 
                 int maxTries = container.ItemSlots.Count;
-                while (loc.count != 0 && maxTries > 1) {
+                while (loc.count != 0 && maxTries > 0) {
 
                     maxTries--; // This should force it to quit after trying at least to move one into every single slot.
                     ItemSlot s = container.FindAvailableSlot (loc.item);

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Lomztein.PlaceholderName.Player {
 
+    [ExecuteInEditMode]
     public class PlayerCamera : MonoBehaviour {
 
         public PlayerController playerController;

@@ -126,4 +126,9 @@ MonoBehaviour:
   parentSlot: {fileID: 0}
   parentCharacter: {fileID: 0}
   equipmentAttributes:
-  - {fileID: 11400000, guid: 0f18398e9b5ba7240be6e340cb387b72, type: 2}
+  - attribute: {fileID: 11400000, guid: 0f18398e9b5ba7240be6e340cb387b72, type: 2}
+    multiplier: 0.5
+  - attribute: {fileID: 11400000, guid: 28d8b06ee20406f49903812663bd4ab1, type: 2}
+    multiplier: 500
+  - attribute: {fileID: 11400000, guid: 7188b2aae27e66d4fa7bee51b74d059f, type: 2}
+    multiplier: 1

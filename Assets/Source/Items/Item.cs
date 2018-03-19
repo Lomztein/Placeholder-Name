@@ -19,11 +19,12 @@ namespace Lomztein.PlaceholderName.Items {
                 return Iconography.GenerateIcon (prefab.gameObject);
         }
 
+        // It would make more sense for this to return a mesh object, instead of an instantiated GameObject, but that'd require *work*, and be generally less versitile.
         public virtual GameObject GetModelInstance() {
             if (prefab.model != null)
                 return Instantiate (prefab.model);
             else
-                return Iconography.GenerateModel (prefab.gameObject, Vector3.zero, Quaternion.identity);
+                return Iconography.InstantiateModel (prefab.gameObject, Vector3.zero, Quaternion.identity);
         }
 
         public static implicit operator ItemPrefab(Item item) {

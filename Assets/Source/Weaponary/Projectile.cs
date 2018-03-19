@@ -33,7 +33,7 @@ namespace Lomztein.PlaceholderName.Weaponary {
 
                 float rad = inaccuracy * Mathf.Deg2Rad;
                 Vector3 angled = muzzle.forward + muzzle.rotation * (Vector3.right * Mathf.Sin (Random.Range (-rad, rad)) + Vector3.up * Mathf.Sin (Random.Range (-rad, rad)));
-                newProjectile.velocity = angled * speed;
+                newProjectile.velocity = angled * speed * Random.Range (0.9f, 1.1f);
 
                 newProjectile.hittableLayer |= fromWeapon.parentCharacter.targetLayer;
                 damageMul = fromWeapon.parentCharacter.damageMul.GetAdditiveValue ();

@@ -18,24 +18,6 @@ namespace Lomztein.PlaceholderName.Characters.Extensions {
             return result;
         }*/
 
-        public static bool TakeDamage (this Stat<Health> stat, float damage) {
-            // Get the last health pool that still has any health left in it.
-            Health lastNonEmpty = stat.GetAllValues ().LastOrDefault (x => x.health > 0f);
-            if (lastNonEmpty == null)
-                return true; // There are no pools without damage, health is drained.
-
-            // Calculate remainder after taking damage.
-            float rest = lastNonEmpty.health - damage;
-            lastNonEmpty.TakeDamage (damage);
-
-            // If there was excess damage, recursively damage next pool.
-            if (rest < 0f)
-                if (stat.TakeDamage (rest))
-                    return true; // This was last pool, health is drained.
-
-            return false;
-        }
-
     }
 
 }

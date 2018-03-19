@@ -17,9 +17,14 @@ namespace Lomztein.PlaceholderName.Characters {
             health = maxHealth.GetAdditiveValue ();
         }
 
-        public void TakeDamage (float damage) {
+        public bool TakeDamage(float damage) {
             health -= damage;
+            if (health > maxHealth.GetAdditiveValue ())
+                health = maxHealth.GetAdditiveValue ();
+
+            return health < 0f;
         }
+
 
     }
 }

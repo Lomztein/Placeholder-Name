@@ -18,7 +18,14 @@ namespace Lomztein.PlaceholderName.Utility {
             gameObject.SetActive (false);
         }
 
-        public static GameObject GenerateModel (GameObject source, Vector3 position, Quaternion rotation) {
+        /// <summary>
+        /// Instantiates a physical model of the given source object. Essentially copying the GameObject and removing all non-transform non-rendering components, leaving an empty model.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <returns></returns>
+        public static GameObject InstantiateModel (GameObject source, Vector3 position, Quaternion rotation) {
             // First create object and strip away all non-transform non-renderer components.
             GameObject model = Instantiate (source, position, rotation);
             List<Component> nonVitals = model.GetComponentsInChildren<Component> ().Where (x => !(x is Transform) && !(x is Renderer) && !(x is MeshFilter)).ToList ();
@@ -36,7 +43,7 @@ namespace Lomztein.PlaceholderName.Utility {
             renderCamera.enabled = true;
             renderCamera.aspect = 1f;
 
-            GameObject model = GenerateModel (obj, iconography.transform.position, Quaternion.identity);
+            GameObject model = InstantiateModel (obj, iconography.transform.position, Quaternion.identity);
 
             RenderTexture renderTexture = new RenderTexture (renderSize, renderSize, 24);
             renderTexture.Create ();

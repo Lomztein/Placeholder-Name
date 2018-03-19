@@ -14,13 +14,21 @@ public class CirclularSpawner : MonoBehaviour {
 	}
 	
 	void Spawn () {
-        Vector3 position = Random.onUnitSphere * range;
-        position.y = 2f;
-
-        Instantiate (spawnPrefab, transform.position + position, Quaternion.identity);
+        Instantiate (spawnPrefab, transform.position + GetSpawnPos (), Quaternion.identity);
     }
 
     private void OnDrawGizmosSelected() {
         Gizmos.DrawWireSphere (transform.position, range);
+    }
+
+    private Vector3 GetSpawnPos () {
+        Vector3 center = Vector3.zero;
+        float angle = Random.Range (0f, 360f);
+
+        float cos = Mathf.Cos (angle * Mathf.Rad2Deg);
+        float sin = Mathf.Sin (angle * Mathf.Rad2Deg);
+
+        center += new Vector3 (cos * range, 0f, sin * range);
+        return center;
     }
 }

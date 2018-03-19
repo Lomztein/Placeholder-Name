@@ -81,8 +81,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8878ec39d5af264f8d5cb64b7bd75d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weight: 0.2
-  speed: 250
+  weight: 0.1
+  speed: 150
   armorPenetration: 0.3
   damageMul: 1
   amount: 1

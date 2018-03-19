@@ -17,7 +17,8 @@ namespace Lomztein.PlaceholderName.Characters {
     public class Character : MonoBehaviour, IDamageable, IKillable, IHasHealth {
 
         [Header ("Stats")]
-        public HealthStat health = new HealthStat ("Health", new Health (new FloatStat ("Base Health", 100f)));
+        public Health health = new Health (new FloatStat ("MaxHealth", 100f));
+        public FloatStat regeneration = new FloatStat ("Regeneration", 0f);
         public FloatStat armor = new FloatStat ("Armor", 0f);
         public FloatStat speed = new FloatStat ("Speed", 5f);
         public FloatStat damageMul = new FloatStat ("Damage", 1f);
@@ -54,12 +55,16 @@ namespace Lomztein.PlaceholderName.Characters {
         public delegate void OnKilledEvent(Character killer);
         public event OnKilledEvent OnKilled;
 
+        public virtual void FixedUpdate () {
+            health.TakeDamage (-regeneration.GetAdditiveValue ());
+        }
+
         public float GetHealth() {
-            return health.GetAllValues ().Sum (x => x.health);
+            return health.health;
         }
 
         public float GetMaxHealth() {
-            return health.GetAllValues ().Sum (x => x.maxHealth.GetAdditiveValue ());
+            return health.maxHealth.GetAdditiveValue ();
         }
 
         public void TakeDamage(Damage damage) {

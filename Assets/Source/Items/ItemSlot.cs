@@ -97,7 +97,7 @@ namespace Lomztein.PlaceholderName.Items {
         }
 
         // This entire method could use a rewrite, partly because it's strange to use in practice, second to figure out how it works.
-        public void MoveItem(ItemSlot newSlot, int transferCount = -1, bool oppisiteStack = false) {
+        public void MoveItem(ItemSlot newSlot, int transferCount = -1) {
             // Remember: Clicking an inventory button moves the buttons slot into the hand, ergo it calls this function with the hand slot as newSlot.
 
             Item oldItem = item;
@@ -105,15 +105,16 @@ namespace Lomztein.PlaceholderName.Items {
 
             int otherCount = newSlot.count;
 
-            if (transferCount == -1)
-                transferCount = Mathf.Min (count, newSlot.GetAvailableSpace ());
-
             if (oldItem && !newSlot.AllowItem (oldItem.prefab))
                 return;
             if (newItem && !AllowItem (newItem))
                 return;
 
             if (Item.Equals (oldItem, newItem)) {
+
+                // If they are equal, transferCount should limit to the amount of space remaining in the newSlot.
+                if (transferCount == -1)
+                    transferCount = Mathf.Min (count, newSlot.GetAvailableSpace ());
 
                 // Both sides have items, are the same item and metadata.
                 int total = otherCount + transferCount;
@@ -131,15 +132,16 @@ namespace Lomztein.PlaceholderName.Items {
                     ChangeCount (-remaining);
                 }
 
-                if (oppisiteStack) {
-                    newSlot.MoveItem (this);
-                }
                 // Other slot has enough room for this slots items, so it adds
                 // this slots item and removes item from this slot.
             } else {
                 // Both sides are not the same item, or any side doesn't have an item. Simply swap spaces.
                 // If recieving side is empty, only the transferCount should be moved, if not, and transferCount
                 // isn't the entire stack, do nothing.
+
+                // If they are not equal, transferCount should be limited to the maximum amount of space in the newSlot.
+                if (transferCount == -1)
+                    transferCount = Mathf.Min (count, newSlot.GetMaxItems ());
 
                 if (newSlot.item == null) {
 

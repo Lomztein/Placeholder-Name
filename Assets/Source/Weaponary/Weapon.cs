@@ -87,7 +87,7 @@ namespace Lomztein.PlaceholderName.Weaponary {
         }
 
         public float GetFirerate () {
-            return rechamberRate * parentCharacter.firerateMul.GetAdditiveValue ();
+            return rechamberRate / parentCharacter.firerateMul.GetAdditiveValue ();
         }
 
         public float GetSequenceRate () {

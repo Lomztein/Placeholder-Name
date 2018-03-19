@@ -82,8 +82,6 @@ namespace Lomztein.PlaceholderName.Player {
 
             if (Input.GetMouseButtonDown (0)) {
                 if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity, physicalItemLayer)) {
-                    if (itemInHand.item != null)
-                        PhysicalItem.Create (itemInHand, itemModel.position, itemModel.rotation);
                     PhysicalItem item = hitInfo.collider.GetComponent<PhysicalItem> ();
                     item.slot.MoveItem (itemInHand);
                 }

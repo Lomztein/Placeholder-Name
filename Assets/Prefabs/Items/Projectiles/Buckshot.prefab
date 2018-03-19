@@ -125,10 +125,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 0.1
   speed: 100
-  armorPenetration: 0.3
+  armorPenetration: 0
   damageMul: 1
-  amount: 12
-  inaccuracy: 5
+  amount: 16
+  inaccuracy: 4
   hittableLayer:
     serializedVersion: 2
     m_Bits: 256
